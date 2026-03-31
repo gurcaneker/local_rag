@@ -1,0 +1,56 @@
+Neler Tamamlandı?
+Klasör ve Mimarisi:
+
+Projeyi modüler ve ölçeklenebilir (ileride multi-tenant veya mikroservis mantığına uygun) bir yapıda app/ çatısı altında klasörledik (api, core, services, db, parsers, models).
+Core / Çekirdek Yapı:
+
+.env.example ve pydantic tabanlı config.py ile ortam değişkenleri yönetimi sağlandı.
+Loglama (logging.py) ve merkezi prompt yönetimi (prompts.py) dosyaları eklendi.
+Veri Modelleri (Models):
+
+API istekleri, vektor-veritabanı dokümanları ve parçalar (chunks) için Pydantic modeller oluşturuldu (ileriye dönük olarak workspace_id ve tenant_id gibi alanlar rezerve edildi).
+Kapsamlı Servisler (Services):
+
+EmbeddingService: sentence-transformers ile lokal embedding üretimi.
+LLMService: Ollama API entegrasyonu.
+DocumentService: Dosyaları kaydetme ve uzantıya göre ayrıştırma.
+IngestionService: Metni chunklara (parçalara) ayırıp vektörleştirme ve veritabanına kaydetme iş akışı.
+RetrievalService: Veritabanından en alakalı bağlamı (context) arama arayüzü.
+Veritabanı Katmanı (DB):
+
+İleride Qdrant gibi başka sağlayıcılara geçilebilmesi için kurulan Abstract base veri deposu arabirimi (VectorStoreBase).
+Bu arabirimi uygulayan somut LanceDB entegrasyonu uygulaması (LanceDBStore).
+Dosya Ayrıştırıcılar (Parsers):
+
+PDF (pdfplumber ile), MD ve TXT metin çıkarıcı araçlar.
+FastAPI Uç Noktaları (Routes):
+
+POST /documents/upload: Belge yükleme ve indexleme.
+GET /documents: Indexli belgeleri listeleme.
+POST /chat/ask: Eklenen bağlama göre soru sorma (RAG).
+GET /health: Bağlantı durumlarını kontrol etme.
+Yapılandırma & Başlangıç betikleri:
+
+main.py
+Test için örnek Python betiği (scripts/ingest_sample.py)
+Bağımlılıklar (requirements.txt, pyproject.toml) ve README.md.
+Sistemi Test Etmek İçin Yapmanız Gerekenler:
+Temel iskeleti tamamladık. Projeyi ayağa kaldırmak ve denemek için terminalinizde şu adımları izleyebilirsiniz:
+
+Bağımlılıkları kurun:
+
+bash
+cd ~/tkgm/local_rag
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+Ollama'yı terminalde başlatın (Eğer llama3 indirilmediyse ollama pull llama3 yazın)
+
+bash
+ollama serve
+FastAPI Sunucusunu Başlatın (İkinci bir terminal sekmesinde aktif venv içerisindeyken):
+
+bash
+uvicorn app.main:app --reload
+Sunucu başladıktan sonra API üzerinden scripts/ingest_sample.py dosyasını kullanarak bir PDF indeksleyip doğrudan sunucuya sorular sorabilirsiniz.
+
