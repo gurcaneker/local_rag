@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "local-rag"
+version = "0.1.0"
+description = "Local RAG Platform MVP"
+authors = ["AI <ai@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "*"
+uvicorn = "*"
+pydantic = "*"
+pydantic-settings = "*"
+lancedb = "*"
+sentence-transformers = "*"
+pdfplumber = "*"
+python-multipart = "*"
+requests = "*"
+pandas = "*"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
